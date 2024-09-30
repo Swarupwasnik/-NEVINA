@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaDownload } from "react-icons/fa6";
 import {
   faSquareCaretLeft,
   faHandshakeAngle,
@@ -38,7 +41,7 @@ import {
   faListCheck,
   faShuffle,
 } from "@fortawesome/free-solid-svg-icons";
-import moment from "moment";
+import { FaLock } from "react-icons/fa6";
 import { CiFacebook } from "react-icons/ci";
 import { FaInstagram } from "react-icons/fa";
 import { FaPinterestP } from "react-icons/fa";
@@ -46,14 +49,29 @@ import { CiTwitter } from "react-icons/ci";
 import { FaLinkedinIn } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
 
-// import Calendar from "./Calender";
+const myEvents = [
+  {
+    title: "Meeting",
+    allDay: false,
+    start: new Date(2023, 8, 28, 10, 0), 
+    end: new Date(2023, 8, 28, 12, 0),
+  },
+  {
+    title: "Lunch Break",
+    allDay: false,
+    start: new Date(2023, 8, 28, 13, 0),
+    end: new Date(2023, 8, 28, 14, 0),
+  },
+];
 
+const localizer = momentLocalizer(moment);
 function App() {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
+  const [events, setEvents] = useState(myEvents);
   const [progress, setProgress] = useState(0);
   const audioRef = useRef(null);
+  
 
   const toggleDropdown = (dropdownId) => {
     setOpenDropdown(openDropdown === dropdownId ? null : dropdownId);
@@ -82,6 +100,7 @@ function App() {
     audioRef.current.currentTime = (newValue / 100) * audioRef.current.duration;
   };
 
+
   useEffect(() => {
     const audio = audioRef.current;
 
@@ -99,207 +118,219 @@ function App() {
         audio.removeEventListener("timeupdate", updateProgress);
       }
     };
-  }, [audioRef]); 
+  }, [audioRef]);
+
+  
   return (
     <>
-      <div class="container">
-        <nav>
-          <ul>
-            <li style={{alignItems:"center"}}>
-              <a href="#" class="dropdown-toggle">
-                <FontAwesomeIcon icon={faHouse} />
-                <span class="nav-item">Home</span>
-              </a>
-            </li>
-
-            {/* Profile Item */}
-            <li>
-              <a href="">
-                <FontAwesomeIcon icon={faUser} />
-                <span class="nav-item">Profile</span>
-              </a>
-            </li>
-
-            {/* Library Item */}
-            <li>
-              <a href="">
-                <FontAwesomeIcon icon={faBook} />
-                <span class="nav-item">Library</span>
-              </a>
-            </li>
-
-            {/* Collection Dropdown */}
-            <li>
-              <a
-                href="#"
-                onClick={() => toggleDropdown("collection")}
-                class="dropdown-toggle"
-              >
-                <FontAwesomeIcon icon={faCopy} />
-                <span class="nav-item">Collection</span>
-                <FontAwesomeIcon
-                  icon={
-                    openDropdown === "collection" ? faChevronUp : faChevronDown
-                  }
-                  className="dropdown-arrow"
-                />
-              </a>
-              {openDropdown === "collection" && (
-                <ul className="dropdown-menu">
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faListCheck} />
-                      <span>Playlists</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faShuffle} />
-                      <span>Tracks</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faMicrophoneLines} />
-                      <span>Artist</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faRecordVinyl} />
-                      <span>Albums</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faCompactDisc} />
-                      <span>Genres</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faLayerGroup} />
-                      <span>Decades</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faGlobe} />
-                      <span>Geos</span>
-                    </a>
-                  </li>
-                </ul>
-              )}
-            </li>
-
-            {/* Community Item */}
-            <li>
-              <a href="">
-                <FontAwesomeIcon icon={faFaceSmile} />
-                <span class="nav-item">Community</span>
-              </a>
-            </li>
-
-            {/* Stations Dropdown */}
-            <li>
-              <a
-                href="#"
-                onClick={() => toggleDropdown("stations")}
-                class="dropdown-toggle"
-              >
-                <FontAwesomeIcon icon={faRadio} />
-                <span class="nav-item">Stations</span>
-                <FontAwesomeIcon
-                  icon={
-                    openDropdown === "stations" ? faChevronUp : faChevronDown
-                  }
-                  className="dropdown-arrow"
-                />
-              </a>
-              {openDropdown === "stations" && (
-                <ul className="dropdown-menu">
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faCalendar} />
-                      <span>Scheduled Listening</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faMagnifyingGlass} />
-                      <span>Music discovery</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faMusic} />
-                      <span>Positive Music</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faFaceSmileWink} />
-                      <span>Mood Regulation</span>
-                    </a>
-                  </li>
-                </ul>
-              )}
-            </li>
-
-            {/* Performance Dropdown */}
-            <li>
-              <a
-                href="#"
-                onClick={() => toggleDropdown("performance")}
-                class="dropdown-toggle"
-              >
-                <FontAwesomeIcon icon={faChartSimple} />
-                <span class="nav-item">Performance</span>
-                <FontAwesomeIcon
-                  icon={
-                    openDropdown === "performance" ? faChevronUp : faChevronDown
-                  }
-                  className="dropdown-arrow"
-                />
-              </a>
-              {openDropdown === "performance" && (
-                <ul className="dropdown-menu">
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faCalendarDays} />
-                      <span>Calendar</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faUserGroup} />
-                      <span>Groups</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <FontAwesomeIcon icon={faHeadphones} />
-                      <span>Music Analysis</span>
-                    </a>
-                  </li>
-                </ul>
-              )}
-            </li>
-
-<div className="log">
-            <li>
-                    <a href="#">
-                      <span> Pro Partner </span>
-                      <FontAwesomeIcon icon={faHandshakeAngle} />
-                    </a>
-                  </li>
-                  </div>
-
+      <div 
+      className="container"
+    
+      >
+        <section>
           
-          </ul>
-        </nav>
+
+          <nav className="sidebar">
+            <ul>
+              <li style={{ alignItems: "center" }}>
+                <a href="#" class="dropdown-toggle">
+                  <FontAwesomeIcon icon={faHouse} />
+                  <span class="nav-item">Home</span>
+                </a>
+              </li>
+
+              
+              <li>
+                <a href="">
+                  <FontAwesomeIcon icon={faUser} />
+                  <span class="nav-item">Profile</span>
+                </a>
+              </li>
+
+             
+              <li>
+                <a href="">
+                  <FontAwesomeIcon icon={faBook} />
+                  <span class="nav-item">Library</span>
+                </a>
+              </li>
+
+              
+              <li>
+                <a
+                  href="#"
+                  onClick={() => toggleDropdown("collection")}
+                  class="dropdown-toggle"
+                >
+                  <FontAwesomeIcon icon={faCopy} />
+                  <span class="nav-item">Collection</span>
+                  <FontAwesomeIcon
+                    icon={
+                      openDropdown === "collection"
+                        ? faChevronUp
+                        : faChevronDown
+                    }
+                    className="dropdown-arrow"
+                  />
+                </a>
+                {openDropdown === "collection" && (
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faListCheck} />
+                        <span>Playlists</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faShuffle} />
+                        <span>Tracks</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faMicrophoneLines} />
+                        <span>Artist</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faRecordVinyl} />
+                        <span>Albums</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faCompactDisc} />
+                        <span>Genres</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faLayerGroup} />
+                        <span>Decades</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faGlobe} />
+                        <span>Geos</span>
+                      </a>
+                    </li>
+                  </ul>
+                )}
+              </li>
+
+              
+              <li>
+                <a href="">
+                  <FontAwesomeIcon icon={faFaceSmile} />
+                  <span class="nav-item">Community</span>
+                </a>
+              </li>
+
+             
+              <li>
+                <a
+                  href="#"
+                  onClick={() => toggleDropdown("stations")}
+                  class="dropdown-toggle"
+                >
+                  <FontAwesomeIcon icon={faRadio} />
+                  <span class="nav-item">Stations</span>
+                  <FontAwesomeIcon
+                    icon={
+                      openDropdown === "stations" ? faChevronUp : faChevronDown
+                    }
+                    className="dropdown-arrow"
+                  />
+                </a>
+                {openDropdown === "stations" && (
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faCalendar} />
+                        <span>Scheduled Listening</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faMagnifyingGlass} />
+                        <span>Music discovery</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faMusic} />
+                        <span>Positive Music</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faFaceSmileWink} />
+                        <span>Mood Regulation</span>
+                      </a>
+                    </li>
+                  </ul>
+                )}
+              </li>
+
+              
+              <li>
+                <a
+                  href="#"
+                  onClick={() => toggleDropdown("performance")}
+                  class="dropdown-toggle"
+                >
+                  <FontAwesomeIcon icon={faChartSimple} />
+                  <span class="nav-item">Performance</span>
+                  <FontAwesomeIcon
+                    icon={
+                      openDropdown === "performance"
+                        ? faChevronUp
+                        : faChevronDown
+                    }
+                    className="dropdown-arrow"
+                  />
+                </a>
+                {openDropdown === "performance" && (
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faCalendarDays} />
+                        <span>Calendar</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faUserGroup} />
+                        <span>Groups</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <FontAwesomeIcon icon={faHeadphones} />
+                        <span>Music Analysis</span>
+                      </a>
+                    </li>
+                  </ul>
+                )}
+              </li>
+
+              <div className="log">
+                <li>
+                  <a href="#">
+                    <span> Pro Partner </span>
+                    <FontAwesomeIcon icon={faHandshakeAngle} />
+                  </a>
+                </li>
+              </div>
+            </ul>
+          </nav>
+        </section>
 
         <section class="main">
+       
           <div class="main-top">
             <div
               className="plug"
@@ -310,7 +341,8 @@ function App() {
                 padding: "0 20px",
               }}
             >
-=              <div
+              ={" "}
+              <div
                 className="get"
                 style={{
                   display: "flex",
@@ -320,7 +352,6 @@ function App() {
               >
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
               </div>
-
               <div
                 className="get"
                 style={{
@@ -333,21 +364,25 @@ function App() {
                 <div className="get1">
                   <div className="get1">Premium</div>
                 </div>
-                <div>
-                  <div className="get1" id="get1">
-                    <button
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: '10px,borderRadius:"30%',
-                        border: "1px soild",
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faDownload} />
-                      <span>Get App</span>
-                    </button>
-                  </div>
-                </div>
+               
+                   <div className="get1" id="get1">
+              <button
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  borderRadius: "30px",
+                  border: "1px solid",
+                  padding: "5px 20px",
+                  backgroundColor: "#f0f0f0",
+              
+                  
+                }}
+              >
+                <FaDownload  style={{fontSize:"25px"}}/>
+                <span>Get App</span>
+              </button>
+            </div>
 
                 <div className="get1" style={{ display: "flex", gap: "15px" }}>
                   <FontAwesomeIcon
@@ -358,62 +393,110 @@ function App() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> 
 
-          <p> ← Back of Library</p>
+          
+
+          <p style={{ textAlign: "start" }}> ← Back of Library</p>
 
           <div className="started">
             <div className="started1">
-              <button style={{ backgroundColor: "orange",color:'red'}}>All</button>
+              <button style={{ backgroundColor: "orange", color: "red" }}>
+                All
+              </button>
             </div>
             <div className="started1">
-              <button style={{color:"red"}}>Listening</button>
+              <button style={{ color: "red" }}>Listening</button>
             </div>
             <div className="started1">
-              <button style={{color:'red'}}>Learning</button>
+              <button style={{ color: "red" }}>Learning</button>
             </div>
             <div className="started1">
-              <button style={{color:'red'}} >Rehearsal</button>
+              <button style={{ color: "red" }}>Rehearsal</button>
             </div>
             <div className="started1">
-              <button style={{color:'red'}}>Perform</button>
+              <button style={{ color: "red" }}>Perform</button>
+            </div>
+          </div>
+          <div className="helo">
+      
+            <div
+              className="wht"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "10px",
+                flexWrap: "wrap",
+                fontFamily: "sans-serif",
+              }}
+            >
+              <div className="hel1">
+                <h2
+                  style={{ textDecoration: "underline", fontWeight: "lighter" }}
+                >
+                  Calendar
+                </h2>
+              </div>
+              <div
+                className="hel1"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  <FaLock style={{ marginRight: "10px" }} />
+                  <span style={{ marginRight: "10px" }}>Google Calendar</span>
+                  <label className="switch">
+                    <input type="checkbox" checked />
+                    <span className="slider round"></span>
+                  </label>
+                </span>
+              </div>
+            </div>
+            <hr
+              style={{
+                height: "2px",
+                borderWidth: 0,
+                color: "gray",
+                backgroundColor: "gray",
+                margin: "10px",
+              }}
+            ></hr>
+
+            <div style={{ height: "80vh" }}>
+              <Calendar
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                defaultView="month"
+                views={["month", "week", "day"]}
+                style={{ height: "100%" }}
+                selectable={true}
+                onSelectEvent={(event) => alert(event.title)}
+                onSelectSlot={(slotInfo) =>
+                  alert(
+                    `Selected time: ${slotInfo.start.toLocaleString()} - ${slotInfo.end.toLocaleString()}`
+                  )
+                }
+              />
             </div>
           </div>
 
-          <section class="main-course">
-            <div className="cal">
-              <div className="cal2">
-                <div
-                  className="cal2"
-                  style={{ height: "400px", width: "300px" }}
-                >
-                  {/* <Calendar
-              events={list}
-               startAccessor="start"
-               endAccessor="end"
-               defaultDate={moment().toDate()}
-               eventPropGetter={event => {
-                    const eventData = list.find(ot => ot.id === event.id);
-                   const backgroundColor = eventData && eventData.color;
-                   return { style: { backgroundColor:"red" } };
-               }}
-           /> */}
-                </div>
-                <div className="cal2">{/* <Calendar/> */}</div>
-              </div>
-            </div>
-          </section>
-          
-
-          <footer className="ft" style={{ textAlign: "center" }}>
+          <footer
+            className="ft"
+            style={{ textAlign: "center", marginTop: "80px" }}
+          >
             <span style={{ marginRight: "20px" }}>About</span> |{" "}
             <span style={{ marginRight: "20px" }}>Help</span> |{" "}
             <span style={{ marginRight: "20px" }}>Terms and Condition</span> |
             <span style={{ marginRight: "20px" }}>Privacy</span> |{" "}
             <span style={{ marginRight: "20px" }}>Copyright Policy</span> |{" "}
             <span style={{ marginRight: "20px" }}>Contact Us</span>
-            <br />
-            | @Curioushit 2023 - all rights reserved |{" "}
+            <br />| @Curioushit 2023 - all rights reserved |{" "}
             <CiFacebook style={{ marginLeft: "1px" }} />{" "}
             <FaInstagram style={{ marginLeft: "1px" }} />{" "}
             <FaPinterestP style={{ marginLeft: "1px" }} />{" "}
